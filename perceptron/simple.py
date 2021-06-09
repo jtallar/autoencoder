@@ -19,7 +19,7 @@ class SimplePerceptron(object):
     # sup_w is a 2D matrix with all the W vectors of the superior layer
     # sup_delta is a 1D array, resulting in all the delta values of the superior layer
     # the two above are only used in hidden layers
-    def train(self, out: np.ndarray, sup_w: np.ndarray, sup_delta: np.ndarray, eta: float, epoch: bool = False) \
+    def retro(self, out: np.ndarray, sup_w: np.ndarray, sup_delta: np.ndarray, eta: float, epoch: bool = False) \
             -> (np.ndarray, float):
         # activation for this neuron
         activation_derived = self.act_func_der(np.dot(self.input, self.w))
