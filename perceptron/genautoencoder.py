@@ -8,7 +8,6 @@ class GenAutoEncoder(object):
 
     def __init__(self, activation_function, activation_function_derived,
                  layout: [int], data_dim: int, latent_dim: int):
-
         self.data_dim: int = data_dim
         self.latent_dim: int = latent_dim
         self.encoderMean = cp.ComplexPerceptron(activation_function, activation_function_derived,
@@ -28,7 +27,6 @@ class GenAutoEncoder(object):
     # propagates input along the encoder and decoder
     # returns always the output of the encoder (latent space input)
     def activation(self, init_input: np.ndarray) -> np.ndarray:
-
         # propagate and return mean and std
         mean_out: np.ndarray = self.encoderMean.activation(init_input, training=True)
         std_out: np.ndarray = self.encoderStd.activation(init_input, training=True)
@@ -43,7 +41,6 @@ class GenAutoEncoder(object):
     # retro-propagates the difference with the expected out through the auto encoder
     # returns the latent space input on retro-propagation
     def retro(self, expected_out: np.ndarray, eta: float) -> (np.ndarray, np.ndarray):
-
         # retro-propagate on decoder
         out_dim: int = len(expected_out)
         sup_w, sup_delta = self.decoder.retro(expected_out, eta, np.empty(out_dim), np.empty(out_dim))
@@ -65,6 +62,7 @@ class GenAutoEncoder(object):
         self.decoder.update_w()
 
     # calculates the error of the auto-encoder
-    def error(self, data_in: np.ndarray, data_out: np.ndarray, trust: float) -> float:
-        return np.sum(np.abs((data_out[:, 1:] -
-                              f.discrete(self.activation(data_in[:, 1:]), trust)) ** 2)) / 2
+    def error(self, data_in: np.ndarray, data_out: np.ndarray, trust: float, use_trust: bool) -> float:
+        if use_trust:
+            return np.sum(np.abs((data_out[:, 1:] -
+                                  f.discrete(self.activation(data_in[:, 1:]), trust, use_trust)) ** 2)) / 2

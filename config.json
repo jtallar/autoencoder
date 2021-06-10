@@ -16,6 +16,7 @@
 	"error_threshold": 0.0001,
 	"epochs": 1000,
 	"trust": 0.7,
+	"use_trust": false,
 
 	"denoising": {
 		"pm": 0.5

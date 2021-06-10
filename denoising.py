@@ -43,7 +43,7 @@ for _ in range(config["epochs"]):
     auto_encoder.update_w()
 
     # calculate error
-    error: float = auto_encoder.error(parser.add_noise_dataset(dataset, pm), dataset, config["trust"])
+    error: float = auto_encoder.error(parser.add_noise_dataset(dataset, pm), dataset, config["trust"], config["use_trust"])
     if error < config["error_threshold"]:
         break
 

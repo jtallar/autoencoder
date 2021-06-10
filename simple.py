@@ -42,7 +42,7 @@ for _ in range(config["epochs"]):
     auto_encoder.update_w()
 
     # calculate error
-    if auto_encoder.error(dataset, dataset, config["trust"]) < config["error_threshold"]:
+    if auto_encoder.error(dataset, dataset, config["trust"], config["use_trust"]) < config["error_threshold"]:
         break
 
 # show latent space given the input

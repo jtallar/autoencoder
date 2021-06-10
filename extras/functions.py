@@ -27,5 +27,7 @@ def function(x, trust) -> int:
     return 0
 
 
-def discrete(data: np.ndarray, trust: float) -> np.ndarray:
+def discrete(data: np.ndarray, trust: float, use_trust: bool) -> np.ndarray:
+    if not use_trust:
+        return data
     return np.vectorize(function)(data, trust)

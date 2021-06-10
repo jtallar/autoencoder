@@ -50,6 +50,6 @@ class AutoEncoder(object):
         self.decoder.update_w()
 
     # calculates the error of the auto-encoder
-    def error(self, data_in: np.ndarray, data_out: np.ndarray, trust: float) -> float:
+    def error(self, data_in: np.ndarray, data_out: np.ndarray, trust: float, use_trust: bool) -> float:
         return np.sum(np.abs((data_out[:, 1:] -
-                              f.discrete(self.activation(data_in[:, 1:]), trust)) ** 2)) / 2
+                              f.discrete(self.activation(data_in[:, 1:]), trust, use_trust)) ** 2)) / 2
