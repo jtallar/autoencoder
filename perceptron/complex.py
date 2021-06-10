@@ -32,12 +32,12 @@ class ComplexPerceptron(object):
 
     # retro-propagates the error of the network given the true input
     # this method starts with an empty sup_w and sup_delta
-    def simple_retro(self, expected_out: np.ndarray, eta: float, epoch: bool) -> (np.ndarray, np.ndarray):
-        return self.retro(expected_out, eta, epoch, np.empty(self.out_dim), np.empty(self.out_dim))
+    def simple_retro(self, expected_out: np.ndarray, eta: float) -> (np.ndarray, np.ndarray):
+        return self.retro(expected_out, eta, np.empty(self.out_dim), np.empty(self.out_dim))
 
     # retro-propagates the error of the network given the true input
     # takes the given suo_w and sup_delta as initial values
-    def retro(self, expected_out: np.ndarray, eta: float, epoch: bool,
+    def retro(self, expected_out: np.ndarray, eta: float,
               init_sup_w: np.ndarray, init_sup_delta: np.ndarray) -> (np.ndarray, np.ndarray):
         if len(expected_out) != self.out_dim:
             raise SystemExit('Bad input size for retro on complex perceptron')
@@ -46,20 +46,12 @@ class ComplexPerceptron(object):
         sup_delta: np.ndarray = init_sup_delta
         for layer in reversed(self.network):
             pool = multiprocessing.pool.ThreadPool(processes=len(layer))
-            sup_w, sup_delta = zip(*pool.map(lambda s_p: s_p.retro(expected_out, sup_w, sup_delta, eta, epoch), layer))
+            sup_w, sup_delta = zip(*pool.map(lambda s_p: s_p.retro(expected_out, sup_w, sup_delta, eta), layer))
             # convert tuples to lists (used in the next layer)
             sup_w = np.asarray(sup_w)
             sup_delta = np.asarray(sup_delta)
 
         return sup_w, sup_delta
-
-    # calculate the error on the perceptron
-    def error(self, inp: np.ndarray, out: np.ndarray, error_enhance: bool = False) -> float:
-        if not error_enhance:
-            return np.sum(np.abs((out - self.activation(inp)) ** 2)) / 2
-
-        return np.sum((1 + out) * np.log(np.divide((1 + out), (1 + self.activation(inp)))) / 2 +
-                      (1 - out) * np.log(np.divide((1 - out), (1 - self.activation(inp)))) / 2)
 
     # resets the w to a randomize range if desired for the entire network
     # if randomize is false, then does nothing
@@ -72,7 +64,7 @@ class ComplexPerceptron(object):
     def update_w(self) -> None:
         for layer in self.network:
             pool = multiprocessing.pool.ThreadPool(processes=len(layer))
-            pool.map(lambda s_p: s_p.update_w(epoch=True), layer)
+            pool.map(lambda s_p: s_p.update_w(), layer)
 
     def __str__(self) -> str:
         out: str = "CPerceptron=("

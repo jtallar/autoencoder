@@ -17,9 +17,9 @@ class AutoEncoder(object):
                                             reversed(layout), latent_dim, data_dim, encoder=False)
 
     # performs the training on the auto-encoder
-    def train(self, data: np.ndarray, eta: float, epoch: bool) -> None:
+    def train(self, data: np.ndarray, eta: float) -> None:
         self.activation(data, training=True)
-        self.retro(data, eta, epoch)
+        self.retro(data, eta)
 
     # propagates input along the encoder and decoder
     # returns always the output of the encoder (latent space input)
@@ -33,14 +33,29 @@ class AutoEncoder(object):
 
     # retro-propagates the difference with the expected out through the auto encoder
     # returns the latent space input on retro-propagation
-    def retro(self, expected_out: np.ndarray, eta: float, epoch: bool) -> (np.ndarray, np.ndarray):
+    def retro(self, expected_out: np.ndarray, eta: float) -> (np.ndarray, np.ndarray):
         out_dim: int = len(expected_out)
-        sup_w, sup_delta = self.decoder.retro(expected_out, eta, epoch, np.empty(out_dim), np.empty(out_dim))
-        self.encoder.retro(expected_out, eta, epoch, sup_w, sup_delta)
+        sup_w, sup_delta = self.decoder.retro(expected_out, eta, np.empty(out_dim), np.empty(out_dim))
+        self.encoder.retro(expected_out, eta, sup_w, sup_delta)
         return sup_w, sup_delta
 
+    # initially the weights (w) start with 0, initialize/change them
+    def randomize_w(self, ref: float) -> None:
+        self.encoder.randomize_w(ref)
+        self.decoder.randomize_w(ref)
 
+    # for epoch training updates each perceptron its weights
+    def update_w(self) -> None:
+        self.encoder.update_w()
+        self.decoder.update_w()
 
+    # calculates the error of the auto-encoder
+    def error(self, data_in: np.ndarray, data_out: np.ndarray, error_enhance: bool = False) -> float:
+        if not error_enhance:
+            return np.sum(np.abs((data_out - self.activation(data_in)) ** 2)) / 2
+
+        return np.sum((1 + data_out) * np.log(np.divide((1 + data_out), (1 + self.activation(data_in)))) / 2 +
+                      (1 - data_out) * np.log(np.divide((1 - data_out), (1 - self.activation(data_in)))) / 2)
 
 
 

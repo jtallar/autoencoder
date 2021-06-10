@@ -12,14 +12,14 @@ class SimplePerceptron(object):
         self.w: np.ndarray = np.zeros(dimension)
         self.input: np.ndarray = np.zeros(dimension)
 
-        # for non iterative training (epoch)
+        # for epoch training
         self.accu_w = np.zeros(dimension)
 
     # out, a 1D array, is used only in the most superior layer
     # sup_w is a 2D matrix with all the W vectors of the superior layer
     # sup_delta is a 1D array, resulting in all the delta values of the superior layer
     # the two above are only used in hidden layers
-    def retro(self, out: np.ndarray, sup_w: np.ndarray, sup_delta: np.ndarray, eta: float, epoch: bool = False) \
+    def retro(self, out: np.ndarray, sup_w: np.ndarray, sup_delta: np.ndarray, eta: float) \
             -> (np.ndarray, float):
         # activation for this neuron
         activation_derived = self.act_func_der(np.dot(self.input, self.w))
@@ -33,12 +33,8 @@ class SimplePerceptron(object):
         # calculate the delta w
         delta_w = (eta * delta * self.input)
 
-        if not epoch:
-            # for iterative update
-            self.update_w(delta_w=delta_w, epoch=False)
-        else:
-            # epoch training accumulation
-            self.accu_w += delta_w
+        # epoch training accumulation
+        self.accu_w += delta_w
 
         return self.w, delta
 
@@ -51,21 +47,13 @@ class SimplePerceptron(object):
         # activation for this neuron, could be int or float, or an array in case is the full dataset
         return self.act_func(np.dot(input_arr, self.w))
 
-    # calculates the error given the full training dataset
-    def error(self, inp: np.ndarray, out: np.ndarray) -> float:
-        return np.sum(np.abs((out - self.activation(inp)) ** 2)) / 2
-
     # resets the w to a randomize range
     def randomize_w(self, ref: float) -> None:
         self.w = np.random.uniform(-ref, ref, len(self.w))
 
     # for epoch training delta is the accum value
-    # for iterative training is the delta of each time
-    def update_w(self, delta_w: np.ndarray = np.asarray([]), epoch: bool = False):
-        if epoch:
-            delta_w = self.accu_w
-
-        self.w += delta_w
+    def update_w(self):
+        self.w += self.accu_w
 
     def __str__(self) -> str:
         return f"SP=(i={self.index}, w={self.w})"
