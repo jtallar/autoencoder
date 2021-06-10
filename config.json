@@ -15,6 +15,7 @@
 	"eta": 0.001,
 	"error_threshold": 0.0001,
 	"epochs": 1000,
+	"trust": 0.7,
 
 	"denoising": {
 		"pm": 0.5

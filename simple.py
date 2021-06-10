@@ -33,10 +33,16 @@ if bool(config["randomize_w"]):
 
 # train auto-encoder
 for _ in range(config["epochs"]):
+
+    # train for this epoch
     for data in dataset:
         auto_encoder.train(data, data, config["eta"])
 
-    if auto_encoder.error(dataset, dataset) < config["error_threshold"]:
+    # apply the changes
+    auto_encoder.update_w()
+
+    # calculate error
+    if auto_encoder.error(dataset, dataset, config["trust"]) < config["error_threshold"]:
         break
 
 # show latent space given the input

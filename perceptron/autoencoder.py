@@ -1,5 +1,6 @@
 import numpy as np
 import complex as cp
+import extras.functions as f
 
 
 # uses 2 complex perceptron
@@ -49,5 +50,6 @@ class AutoEncoder(object):
         self.decoder.update_w()
 
     # calculates the error of the auto-encoder
-    def error(self, data_in: np.ndarray, data_out: np.ndarray) -> float:
-        return np.sum(np.abs((data_out[:, 1:] - self.activation(data_in[:, 1:])) ** 2)) / 2
+    def error(self, data_in: np.ndarray, data_out: np.ndarray, trust: float) -> float:
+        return np.sum(np.abs((data_out[:, 1:] -
+                              f.discrete(self.activation(data_in[:, 1:]), trust)) ** 2)) / 2

@@ -34,10 +34,16 @@ if bool(config["randomize_w"]):
 # train auto-encoder
 pm: float = config["denoising"]["pm"]
 for _ in range(config["epochs"]):
+
+    # train for this epoch
     for data in dataset:
         auto_encoder.train(parser.add_noise(data, pm), data, config["eta"])
 
-    error: float = auto_encoder.error(parser.add_noise_dataset(dataset, pm), dataset)
+    # apply the changes
+    auto_encoder.update_w()
+
+    # calculate error
+    error: float = auto_encoder.error(parser.add_noise_dataset(dataset, pm), dataset, config["trust"])
     if error < config["error_threshold"]:
         break
 

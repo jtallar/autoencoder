@@ -33,10 +33,16 @@ if bool(config["randomize_w"]):
 
 # train auto-encoder
 for _ in range(config["epochs"]):
+
+    # train for this epoch
     for data in dataset:
         auto_encoder.train(data, data, config["eta"])
 
-    error: float = auto_encoder.error(dataset, dataset)
+    # apply the changes
+    auto_encoder.update_w()
+
+    # calculate error
+    error: float = auto_encoder.error(dataset, dataset, config["trust"])
     if error < config["error_threshold"]:
         break
 
