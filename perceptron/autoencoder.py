@@ -17,9 +17,9 @@ class AutoEncoder(object):
                                             reversed(layout), latent_dim, data_dim, encoder=False)
 
     # performs the training on the auto-encoder
-    def train(self, data: np.ndarray, eta: float) -> None:
-        self.activation(data, training=True)
-        self.retro(data, eta)
+    def train(self, data_in: np.ndarray, data_out: np.ndarray, eta: float) -> None:
+        self.activation(data_in, training=True)
+        self.retro(data_out, eta)
 
     # propagates input along the encoder and decoder
     # returns always the output of the encoder (latent space input)

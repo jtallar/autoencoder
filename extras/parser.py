@@ -54,3 +54,19 @@ def extract_subset(data: np.ndarray, ratio: int) -> (np.ndarray, np.ndarray):
 
     # remove data from test
     return np.delete(dataset, np.arange(0, rest_data), 0), np.array(rest_data)
+
+
+def add_noise(data: np.ndarray, prob: float) -> np.ndarray:
+    resp: np.ndarray = data
+    for i in range(len(data)):
+        if np.random.uniform() > prob:
+            resp[i] = 1 - data[i]
+    return resp
+
+
+def add_noise_dataset(dataset: np.ndarray, prob: float) -> np.ndarray:
+    ret: [] = []
+    for data in dataset:
+        ret.append(add_noise(data, prob))
+
+    return np.asarray(ret)

@@ -34,7 +34,7 @@ if bool(config["randomize_w"]):
 # train auto-encoder
 for _ in range(config["epochs"]):
     for data in dataset:
-        auto_encoder.train(data, config["eta"])
+        auto_encoder.train(data, data, config["eta"])
 
     if auto_encoder.error(dataset, dataset, config["retro_error_enhance"]) < config["error_threshold"]:
         break

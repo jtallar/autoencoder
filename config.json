@@ -4,7 +4,7 @@
 	"training_ratio": 60,
 	"data_random_seed": "some nice seed",
 
-	"system": "tanh",
+	"system": "linear",
 	"beta": 0.5,
 	"retro_error_enhance": false,
 
@@ -16,6 +16,10 @@
 	"eta": 0.001,
 	"error_threshold": 0.0001,
 	"epochs": 1000,
+
+	"denoising": {
+		"pm": 0.5
+	},
 
 	"plot": false
 }
