@@ -41,3 +41,6 @@ for _ in range(config["epochs"]):
     if error < config["error_threshold"]:
         break
 
+# check simple input how it performs
+letter: np.ndarray = auto_encoder.activation(parser.add_noise(dataset[0], pm))
+
