@@ -6,7 +6,6 @@
 
 	"system": "linear",
 	"beta": 0.5,
-	"retro_error_enhance": false,
 
 	"layout": [10, 10, 10],
 	"latent_dim": 2,

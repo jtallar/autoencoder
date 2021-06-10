@@ -16,7 +16,7 @@ error_threshold: float = config["error_threshold"]
 full_dataset, _ = parser.read_file(config["file"], config["system_threshold"])
 
 # activation function and its derived
-act_funcs = functions.get_activation_functions(config["system"], config["beta"], config["retro_error_enhance"])
+act_funcs = functions.get_activation_functions(config["system"], config["beta"])
 
 # randomize dataset order. if seed is "" then it is not used
 full_dataset = parser.randomize_data(full_dataset, config["data_random_seed"])
@@ -36,7 +36,7 @@ for _ in range(config["epochs"]):
     for data in dataset:
         auto_encoder.train(data, data, config["eta"])
 
-    error: float = auto_encoder.error(dataset, dataset, config["retro_error_enhance"])
+    error: float = auto_encoder.error(dataset, dataset)
     if error < config["error_threshold"]:
         break
 
