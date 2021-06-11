@@ -19,9 +19,6 @@ class ComplexPerceptron(object):
     # in case of training, saves  the input for later computation on retro propagation
     # returns the final activation value
     def activation(self, init_input: np.ndarray, training: bool = False) -> np.ndarray:
-        if len(init_input) != self.in_dim:
-            raise SystemExit('Bad input size for activation on complex perceptron')
-
         activation_values = init_input
         for layer in self.network:
             pool = multiprocessing.pool.ThreadPool(processes=len(layer))
@@ -39,9 +36,6 @@ class ComplexPerceptron(object):
     # takes the given suo_w and sup_delta as initial values
     def retro(self, expected_out: np.ndarray, eta: float,
               init_sup_w: np.ndarray, init_sup_delta: np.ndarray) -> (np.ndarray, np.ndarray):
-        if len(expected_out) != self.out_dim:
-            raise SystemExit('Bad input size for retro on complex perceptron')
-
         sup_w: np.ndarray = init_sup_w
         sup_delta: np.ndarray = init_sup_delta
         for layer in reversed(self.network):

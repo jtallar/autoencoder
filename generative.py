@@ -50,7 +50,7 @@ for _ in range(config["epochs"]):
 aux: [] = []
 for data in dataset:
     aux.append(auto_encoder.activation(data))
-latent_space: np.ndarray = np.ndarray(aux)
+latent_space: np.ndarray = np.array(aux)
 
 # generate a new something not from the dataset. Creates a new Z between the first two
 new_latent_space: np.ndarray = np.sum([latent_space[0], latent_space[1]], axis=0)/2
