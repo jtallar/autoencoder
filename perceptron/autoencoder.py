@@ -1,6 +1,6 @@
 import numpy as np
-import complex as cp
 import extras.functions as f
+import perceptron.complex as cp
 
 
 # uses 2 complex perceptron
@@ -15,7 +15,7 @@ class AutoEncoder(object):
                                             layout, data_dim, latent_dim, encoder=True)
 
         self.decoder = cp.ComplexPerceptron(activation_function, activation_function_derived,
-                                            reversed(layout), latent_dim, data_dim, encoder=False)
+                                            layout[::-1], latent_dim, data_dim, encoder=False)
 
     # performs the training on the auto-encoder
     def train(self, data_in: np.ndarray, data_out: np.ndarray, eta: float) -> None:

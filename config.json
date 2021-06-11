@@ -1,8 +1,8 @@
 {
-	"file": "inputs/fonts001.txt",
+	"file": "inputs/font001.txt",
 	"system_threshold": 1,
 	"training_ratio": 60,
-	"data_random_seed": "some nice seed",
+	"data_random_seed": 125654,
 
 	"system": "linear",
 	"beta": 0.5,

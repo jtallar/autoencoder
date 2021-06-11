@@ -35,9 +35,9 @@ def normalize_data(data: np.ndarray) -> np.ndarray:
     return (2. * (data - np.min(data)) / np.ptp(data) - 1) * 0.9999999999
 
 
-def randomize_data(data: np.ndarray, seed: any) -> np.ndarray:
+def randomize_data(data: np.ndarray, seed: int) -> np.ndarray:
     aux: np.ndarray = np.c_[data.reshape(len(data), -1)]
-    if str(seed) != "":
+    if seed != 0:
         np.random.seed(seed)
     np.random.shuffle(aux)
     return aux[:, :data.size // len(data)].reshape(data.shape)
@@ -53,7 +53,7 @@ def extract_subset(data: np.ndarray, ratio: int) -> (np.ndarray, np.ndarray):
         rest_data.append(data[i])
 
     # remove data from test
-    return np.delete(dataset, np.arange(0, rest_data), 0), np.array(rest_data)
+    return np.delete(dataset, np.arange(0, len(rest_data)), 0), np.array(rest_data)
 
 
 def add_noise(data: np.ndarray, prob: float) -> np.ndarray:

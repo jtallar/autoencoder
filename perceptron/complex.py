@@ -1,6 +1,6 @@
 import multiprocessing.pool
 import numpy as np
-import simple as sp
+import perceptron.simple as sp
 
 
 class ComplexPerceptron(object):
@@ -11,8 +11,8 @@ class ComplexPerceptron(object):
         self.act_func = activation_function
         self.act_func_der = activation_function_derived
         self.network = None
-        self.in_dim = input_dim
-        self.out_dim = output_dim
+        self.in_dim: int = input_dim
+        self.out_dim: int = output_dim
         self.__init_network(layout, encoder)
 
     # propagates input along the entire network
