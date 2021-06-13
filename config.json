@@ -1,10 +1,10 @@
 {
 	"file": "inputs/font001.txt",
 	"system_threshold": 1,
-	"training_ratio": 60,
-	"data_random_seed": 125654,
+	"training_ratio": 1,
+	"data_random_seed": 0,
 
-	"system": "linear",
+	"system": "tanh",
 	"beta": 0.5,
 
 	"layout": [10, 10, 10],
@@ -12,9 +12,9 @@
 	"randomize_w": true,
 	"randomize_w_ref": 1.0,
 
-	"eta": 0.001,
-	"error_threshold": 0.0001,
-	"epochs": 1,
+	"eta": 0.01,
+	"error_threshold": 1,
+	"epochs": 100,
 	"trust": 0.7,
 	"use_trust": false,
 

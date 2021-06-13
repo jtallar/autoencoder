@@ -45,7 +45,7 @@ def randomize_data(data: np.ndarray, seed: int) -> np.ndarray:
 
 def extract_subset(data: np.ndarray, ratio: int) -> (np.ndarray, np.ndarray):
     dataset: np.ndarray = data
-    rest_len: int = int(len(data) * (1 - ratio) / 100)
+    rest_len: int = int(len(data) * (1 - ratio))
     rest_data = []
 
     for i in range(rest_len):
