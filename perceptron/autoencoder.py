@@ -37,6 +37,7 @@ class AutoEncoder(object):
     def retro(self, expected_out: np.ndarray, eta: float) -> (np.ndarray, np.ndarray):
         out_dim: int = len(expected_out)
         sup_w, sup_delta = self.decoder.retro(expected_out, eta, np.empty(out_dim), np.empty(out_dim))
+        sup_w, sup_delta = self.encoder.retro(expected_out, eta, sup_w, sup_delta)
         return sup_w, sup_delta
 
     # initially the weights (w) start with 0, initialize/change them
@@ -51,5 +52,7 @@ class AutoEncoder(object):
 
     # calculates the error of the auto-encoder
     def error(self, data_in: np.ndarray, data_out: np.ndarray, trust: float, use_trust: bool) -> float:
-        return np.sum(np.abs((data_out[:, 1:] -
-                              f.discrete(self.activation(data_in)[:, 1:], trust, use_trust)) ** 2)) / 2
+        return (np.linalg.norm(data_out[:, 1:] -
+                              f.discrete(self.activation(data_in)[:, 1:], trust, use_trust)) ** 2) / len(data_out[:, 1:])
+        # return np.sum(np.abs((data_out[:, 1:] -
+        #                       f.discrete(self.activation(data_in)[:, 1:], trust, use_trust)) ** 2)) / 2

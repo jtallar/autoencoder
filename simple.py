@@ -4,6 +4,7 @@ import numpy as np
 
 import extras.parser as parser
 import extras.functions as functions
+import extras.utils as utils
 import perceptron.autoencoder as ae
 
 with open("config.json") as file:
@@ -31,8 +32,12 @@ auto_encoder = ae.AutoEncoder(*act_funcs, config["layout"], len(dataset[0]), con
 if bool(config["randomize_w"]):
     auto_encoder.randomize_w(config["randomize_w_ref"])
 
+# vars for plotting
+ep_list = []
+err_list = []
+
 # train auto-encoder
-for _ in range(config["epochs"]):
+for ep in range(config["epochs"]):
 
     # train for this epoch
     for data in dataset:
@@ -42,15 +47,35 @@ for _ in range(config["epochs"]):
     auto_encoder.update_w()
 
     # calculate error
-    if auto_encoder.error(dataset, dataset, config["trust"], config["use_trust"]) < config["error_threshold"]:
+    err = auto_encoder.error(dataset, dataset, config["trust"], config["use_trust"])
+
+    if err < config["error_threshold"]:
         break
+
+    if ep % 100 == 0:
+        print(f'Iteration {ep}, error = {err}')
+
+    # add error to list
+    ep_list.append(ep)
+    err_list.append(err)
+
+
+print(f'Iteration {ep}, error = {err}')
 
 # show latent space given the input
 aux: [] = []
 for data in dataset:
     aux.append(auto_encoder.activation(data, training=False))
 latent_space: np.ndarray = np.array(aux)
+print(latent_space.shape)
 
 # generate a new letter not from the dataset. Creates a new Z between the first two
 new_latent_space: np.ndarray = np.sum([latent_space[0], latent_space[1]], axis=0)/2
 new_letter: np.ndarray = auto_encoder.decoder.activation(new_latent_space, training=False)
+
+# plot error vs epoch
+utils.init_plotter()
+
+utils.plot_values(ep_list, 'epoch', err_list, 'error', sci_y=False)
+
+utils.hold_execution()
