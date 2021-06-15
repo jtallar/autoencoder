@@ -4,13 +4,19 @@ import numpy as np
 class SimplePerceptron(object):
 
     def __init__(self, activation_function, activation_function_derived,
-                 dimension: int, hidden: bool = False, index: int = 0):
+                 dimension: int, hidden: bool = False, index: int = 0,
+                 momentum: bool = False, mom_alpha: float = 0.9):
         self.index = index
         self.hidden: bool = hidden
         self.act_func = activation_function
         self.act_func_der = activation_function_derived
         self.w: np.ndarray = np.zeros(dimension)
         self.input: np.ndarray = np.zeros(dimension)
+
+        # momentum correction data
+        self.prev_delta_w = np.zeros(dimension)
+        self.momentum: bool = momentum
+        self.mom_alpha: float = mom_alpha
 
         # for epoch training
         self.accu_w = np.zeros(dimension)
@@ -54,6 +60,11 @@ class SimplePerceptron(object):
     # for epoch training delta is the accum value
     def update_w(self):
         self.w += self.accu_w
+
+        # in case of momentum, calculate delta w and update values
+        if self.momentum:
+            self.w += self.mom_alpha * self.prev_delta_w
+            self.prev_delta_w = self.accu_w
 
     def __str__(self) -> str:
         return f"SP=(i={self.index}, w={self.w})"

@@ -5,13 +5,14 @@ import perceptron.simple as sp
 class ComplexPerceptron(object):
 
     def __init__(self, activation_function, activation_function_derived,
-                 layout: [int], input_dim: int, full_hidden: bool = False):
+                 layout: [int], input_dim: int, full_hidden: bool = False,
+                 momentum: bool = False, mom_alpha: float = 0.9):
 
         self.act_func = activation_function
         self.act_func_der = activation_function_derived
         self.network = None
         self.in_dim: int = input_dim
-        self.__init_network(layout, full_hidden)
+        self.__init_network(layout, full_hidden, momentum, mom_alpha)
 
     # propagates input along the entire network
     # in case of training, saves  the input for later computation on retro propagation
@@ -31,7 +32,7 @@ class ComplexPerceptron(object):
         sup_w: np.ndarray = init_sup_w
         sup_delta: np.ndarray = init_sup_delta
         for layer in reversed(self.network):
-            sup_w, sup_delta = zip(* list(map(lambda s_p: s_p.retro(expected_out, sup_w, sup_delta, eta), layer)))
+            sup_w, sup_delta = zip(*list(map(lambda s_p: s_p.retro(expected_out, sup_w, sup_delta, eta), layer)))
             # convert tuples to lists (used in the next layer)
             sup_w = np.asarray(sup_w)
             sup_delta = np.asarray(sup_delta)
@@ -64,7 +65,8 @@ class ComplexPerceptron(object):
     # private methods
 
     # initializes the entire network of perceptron given a layout
-    def __init_network(self, hidden_layout: [int], full_hidden: bool = False) -> None:
+    def __init_network(self, hidden_layout: [int], full_hidden: bool = False,
+                       momentum: bool = False, mom_alpha: float = 0.9) -> None:
         # the final amount of perceptron depends on expected output dimension
         layout: np.ndarray = np.array(hidden_layout, dtype=int)
 
@@ -88,4 +90,4 @@ class ComplexPerceptron(object):
             for index in range(layout[level]):
                 # for each index and level, create the corresponding perceptron
                 self.network[level][index] = \
-                    sp.SimplePerceptron(self.act_func, self.act_func_der, dim, hidden, index)
+                    sp.SimplePerceptron(self.act_func, self.act_func_der, dim, hidden, index, momentum, mom_alpha)

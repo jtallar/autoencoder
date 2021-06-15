@@ -7,7 +7,10 @@
 	"system": "exp",
 	"beta": 0.5,
 
-	"layout": [25],
+	"momentum": true,
+	"alpha": 0.9,
+
+	"mid_layout": [25],
 	"latent_dim": 2,
 	"randomize_w": true,
 	"randomize_w_ref": 1.0,

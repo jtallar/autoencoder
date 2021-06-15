@@ -23,7 +23,8 @@ act_funcs = functions.get_activation_functions(config["system"], config["beta"])
 dataset, rest = parser.extract_subset(full_dataset, config["training_ratio"])
 
 # initializes the auto-encoder
-auto_encoder = ae.AutoEncoder(*act_funcs, config["layout"], len(dataset[0]), config["latent_dim"])
+auto_encoder = ae.AutoEncoder(*act_funcs, config["layout"], len(dataset[0]), config["latent_dim"],
+                              config["momentum"], config["alpha"])
 
 # randomize w if asked
 if bool(config["randomize_w"]):

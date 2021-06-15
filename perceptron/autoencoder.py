@@ -7,21 +7,20 @@ import perceptron.complex as cp
 class AutoEncoder(object):
 
     def __init__(self, activation_function, activation_function_derived,
-                 layout: [int], data_dim: int, latent_dim: int):
+                 layout: [int], data_dim: int, latent_dim: int,
+                 momentum: bool = False, mom_alpha: float = 0.9):
         self.data_dim: int = data_dim
         self.latent_dim: int = latent_dim
 
         encoder_layout: [] = layout.copy()
         encoder_layout.append(latent_dim)
-        self.encoder = cp.ComplexPerceptron(activation_function, activation_function_derived,
-                                            encoder_layout, data_dim, full_hidden=True)
+        self.encoder = cp.ComplexPerceptron(activation_function, activation_function_derived, encoder_layout,
+                                            data_dim, full_hidden=True, momentum=momentum, mom_alpha=mom_alpha)
+
         decoder_layout: [] = layout[::-1]
         decoder_layout.append(data_dim)
-        self.decoder = cp.ComplexPerceptron(activation_function, activation_function_derived,
-                                            decoder_layout, latent_dim, full_hidden=False)
-
-
-
+        self.decoder = cp.ComplexPerceptron(activation_function, activation_function_derived, decoder_layout,
+                                            latent_dim, full_hidden=False, momentum=momentum, mom_alpha=mom_alpha)
 
     # performs the training on the auto-encoder
     def train(self, data_in: np.ndarray, data_out: np.ndarray, eta: float) -> None:
@@ -67,4 +66,4 @@ class AutoEncoder(object):
         # Gonza's error
         return (np.linalg.norm(out - act) ** 2) / len(out)
 
-        #return np.sum(np.abs((out - act) ** 2)) / 2
+        # return np.sum(np.abs((out - act) ** 2)) / 2
