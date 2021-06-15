@@ -38,7 +38,7 @@ if bool(config["randomize_w"]):
 utils.init_plotter()
 
 # use minimizer if asked
-if config["optimizer"] != "None":
+if config["optimizer"] != "None" and config["optimizer"] != "":
     # randomize the dataset
     dataset = parser.randomize_data(dataset, config["data_random_seed"])
     # train with minimize
