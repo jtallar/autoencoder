@@ -18,9 +18,6 @@ full_dataset, _ = parser.read_file(config["file"], config["system_threshold"])
 # activation function and its derived
 act_funcs = functions.get_activation_functions(config["system"], config["beta"])
 
-# randomize dataset order. if seed is "" then it is not used
-full_dataset = parser.randomize_data(full_dataset, config["data_random_seed"])
-
 # extract the last % of the dataset
 dataset, rest = parser.extract_subset(full_dataset, config["training_ratio"])
 
@@ -35,6 +32,9 @@ if bool(config["randomize_w"]):
 pm: float = config["denoising"]["pm"]
 for _ in range(config["epochs"]):
 
+    # randomize the dataset everytime
+    dataset = parser.randomize_data(dataset, config["data_random_seed"])
+
     # train for this epoch
     for data in dataset:
         auto_encoder.train(parser.add_noise(data, pm), data, config["eta"])
@@ -46,6 +46,9 @@ for _ in range(config["epochs"]):
     error: float = auto_encoder.error(parser.add_noise_dataset(dataset, pm), dataset, config["trust"], config["use_trust"])
     if error < config["error_threshold"]:
         break
+
+# labels for printing (use with full_dataset)
+labels: [] = ['@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\', ']', '^', '_']
 
 # check simple input how it performs
 letter: np.ndarray = auto_encoder.activation(parser.add_noise(dataset[0], pm))
