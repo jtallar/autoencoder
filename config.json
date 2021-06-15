@@ -11,7 +11,11 @@
 	"momentum": true,
 	"alpha": 0.9,
 
-	"mid_layout": [25],
+	"optimizer": "Powell",
+	"optimizer_iter": 5,
+	"optimizer_fev": 50000,
+
+	"mid_layout": [25, 10],
 	"latent_dim": 2,
 	"randomize_w": true,
 	"randomize_w_ref": 1.0,

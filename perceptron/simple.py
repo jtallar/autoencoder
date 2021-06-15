@@ -56,6 +56,7 @@ class SimplePerceptron(object):
     # resets the w to a randomize range
     def randomize_w(self, ref: float) -> None:
         self.w = np.random.uniform(-ref, ref, len(self.w))
+        # self.w = np.random.uniform(-np.sqrt(1 / len(self.w)), np.sqrt(1 / len(self.w)), len(self.w))
 
     # for epoch training delta is the accum value
     def update_w(self):
@@ -65,6 +66,9 @@ class SimplePerceptron(object):
         if self.momentum:
             self.w += self.mom_alpha * self.prev_delta_w
             self.prev_delta_w = self.accu_w
+
+    def set_w(self, w):
+        self.w = w
 
     def __str__(self) -> str:
         return f"SP=(i={self.index}, w={self.w})"
