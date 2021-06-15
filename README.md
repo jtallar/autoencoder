@@ -5,3 +5,4 @@
 `training_ratio` betweeen 0 and 1
 
 #!pip3 install tensorflow
+#!pip3 install scipy
