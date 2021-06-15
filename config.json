@@ -4,17 +4,17 @@
 	"training_ratio": 1,
 	"data_random_seed": 0,
 
-	"system": "tanh",
+	"system": "exp",
 	"beta": 0.5,
 
-	"layout": [35, 25],
+	"layout": [25],
 	"latent_dim": 2,
 	"randomize_w": true,
 	"randomize_w_ref": 1.0,
 
 	"eta": 1e-4,
 	"error_threshold": 1,
-	"epochs": 140,
+	"epochs": 500,
 	"trust": 0.7,
 	"use_trust": false,
 

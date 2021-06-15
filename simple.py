@@ -39,11 +39,13 @@ err_list = []
 # train auto-encoder
 for ep in range(config["epochs"]):
 
+    dataset = parser.randomize_data(dataset, config["data_random_seed"])
+
     # train for this epoch
     for data in dataset:
         auto_encoder.train(data, data, config["eta"])
 
-    # apply the changes
+        # apply the changes
     auto_encoder.update_w()
 
     # calculate error
@@ -52,8 +54,7 @@ for ep in range(config["epochs"]):
     if err < config["error_threshold"]:
         break
 
-    if ep % 100 == 0:
-        print(f'Iteration {ep}, error = {err}')
+    print(f'Iteration {ep}, error = {err}')
 
     # add error to list
     ep_list.append(ep)
@@ -65,13 +66,14 @@ print(f'Iteration {ep}, error = {err}')
 # show latent space given the input
 aux: [] = []
 for data in dataset:
-    aux.append(auto_encoder.activation(data, training=False))
+    aux.append(auto_encoder.activation_to_latent_space(data))
 latent_space: np.ndarray = np.array(aux)
-print(latent_space.shape)
 
 # generate a new letter not from the dataset. Creates a new Z between the first two
 new_latent_space: np.ndarray = np.sum([latent_space[0], latent_space[1]], axis=0)/2
-new_letter: np.ndarray = auto_encoder.decoder.activation(new_latent_space, training=False)
+print(new_latent_space.shape)
+
+new_letter: np.ndarray = auto_encoder.activation_from_latent_space(new_latent_space)
 
 # plot error vs epoch
 utils.init_plotter()

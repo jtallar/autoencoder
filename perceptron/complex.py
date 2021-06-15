@@ -1,4 +1,3 @@
-import multiprocessing.pool
 import numpy as np
 import perceptron.simple as sp
 
@@ -6,14 +5,13 @@ import perceptron.simple as sp
 class ComplexPerceptron(object):
 
     def __init__(self, activation_function, activation_function_derived,
-                 layout: [int], input_dim: int, output_dim: int, encoder: bool = False):
+                 layout: [int], input_dim: int, full_hidden: bool = False):
 
         self.act_func = activation_function
         self.act_func_der = activation_function_derived
         self.network = None
         self.in_dim: int = input_dim
-        self.out_dim: int = output_dim
-        self.__init_network(layout, encoder)
+        self.__init_network(layout, full_hidden)
 
     # propagates input along the entire network
     # in case of training, saves  the input for later computation on retro propagation
@@ -21,16 +19,10 @@ class ComplexPerceptron(object):
     def activation(self, init_input: np.ndarray, training: bool = False) -> np.ndarray:
         activation_values = init_input
         for layer in self.network:
-            pool = multiprocessing.pool.ThreadPool(processes=len(layer))
-            activation_values = pool.map(lambda s_p: s_p.activation(activation_values, training=training), layer)
+            activation_values = list(map(lambda s_p: s_p.activation(activation_values, training=training), layer))
             activation_values = np.transpose(np.asarray(activation_values))
 
         return activation_values
-
-    # retro-propagates the error of the network given the true input
-    # this method starts with an empty sup_w and sup_delta
-    def simple_retro(self, expected_out: np.ndarray, eta: float) -> (np.ndarray, np.ndarray):
-        return self.retro(expected_out, eta, np.empty(self.out_dim), np.empty(self.out_dim))
 
     # retro-propagates the error of the network given the true input
     # takes the given suo_w and sup_delta as initial values
@@ -39,8 +31,7 @@ class ComplexPerceptron(object):
         sup_w: np.ndarray = init_sup_w
         sup_delta: np.ndarray = init_sup_delta
         for layer in reversed(self.network):
-            pool = multiprocessing.pool.ThreadPool(processes=len(layer))
-            sup_w, sup_delta = zip(*pool.map(lambda s_p: s_p.retro(expected_out, sup_w, sup_delta, eta), layer))
+            sup_w, sup_delta = zip(* list(map(lambda s_p: s_p.retro(expected_out, sup_w, sup_delta, eta), layer)))
             # convert tuples to lists (used in the next layer)
             sup_w = np.asarray(sup_w)
             sup_delta = np.asarray(sup_delta)
@@ -51,14 +42,12 @@ class ComplexPerceptron(object):
     # if randomize is false, then does nothing
     def randomize_w(self, ref: float) -> None:
         for layer in self.network:
-            pool = multiprocessing.pool.ThreadPool(processes=len(layer))
-            pool.map(lambda s_p: s_p.randomize_w(ref), layer)
+            list(map(lambda s_p: s_p.randomize_w(ref), layer))
 
     # for epoch training updates each w with its accum
     def update_w(self) -> None:
         for layer in self.network:
-            pool = multiprocessing.pool.ThreadPool(processes=len(layer))
-            pool.map(lambda s_p: s_p.update_w(), layer)
+            list(map(lambda s_p: s_p.update_w(), layer))
 
     def __str__(self) -> str:
         out: str = "CPerceptron=("
@@ -77,7 +66,7 @@ class ComplexPerceptron(object):
     # initializes the entire network of perceptron given a layout
     def __init_network(self, hidden_layout: [int], full_hidden: bool = False) -> None:
         # the final amount of perceptron depends on expected output dimension
-        layout: np.ndarray = np.append(np.array(hidden_layout, dtype=int), self.out_dim)
+        layout: np.ndarray = np.array(hidden_layout, dtype=int)
 
         # initialize the length of the network
         self.network = np.empty(shape=len(layout), dtype=np.ndarray)
