@@ -32,7 +32,7 @@ def parse_file_set(file_name: str, number_class=float, threshold: int = 1, train
 
 
 def normalize_data(data: np.ndarray) -> np.ndarray:
-    return (2. * (data - np.min(data)) / np.ptp(data) - 1) * 0.9999999999
+    return (2. * (data - np.min(data)) / np.ptp(data) - 1)
 
 
 def randomize_data(data: np.ndarray, seed: int) -> np.ndarray:

@@ -3,6 +3,7 @@
 	"system_threshold": 1,
 	"training_ratio": 1,
 	"data_random_seed": 0,
+	"normalize": false,
 
 	"system": "exp",
 	"beta": 0.5,
@@ -15,10 +16,10 @@
 	"randomize_w": true,
 	"randomize_w_ref": 1.0,
 
-	"eta": 1e-4,
+	"eta": 1e-3,
 	"error_threshold": 1,
-	"epochs": 500,
-	"trust": 0.7,
+	"epochs": 1000,
+	"trust": 0.5,
 	"use_trust": false,
 
 	"denoising": {

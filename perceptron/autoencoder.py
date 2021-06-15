@@ -63,7 +63,4 @@ class AutoEncoder(object):
         act: np.ndarray = f.discrete(self.activation(data_in)[:, 1:], trust, use_trust)
         out: np.ndarray = data_out[:, 1:]
 
-        # Gonza's error
         return (np.linalg.norm(out - act) ** 2) / len(out)
-
-        # return np.sum(np.abs((out - act) ** 2)) / 2

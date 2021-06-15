@@ -19,6 +19,10 @@ full_dataset, _ = parser.read_file(config["file"], config["system_threshold"])
 # activation function and its derived
 act_funcs = functions.get_activation_functions(config["system"], config["beta"])
 
+# normalize data
+if config["normalize"]:
+    full_dataset = parser.normalize_data(full_dataset)
+
 # extract the last % of the dataset
 dataset, rest = parser.extract_subset(full_dataset, config["training_ratio"])
 
