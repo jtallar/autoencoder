@@ -106,7 +106,7 @@ class AutoEncoder(object):
         # calculate error
         err = self.error(data_in, data_out, trust, use_trust)
         self.opt_err.append(err)
-        print(f'Optimizer error: {err}')
+        # print(f'Optimizer error: {err}')
         return err
 
     # train autoencoder with minimizer

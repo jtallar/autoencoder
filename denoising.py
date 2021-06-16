@@ -87,15 +87,15 @@ labels: [] = ['@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', '
 # check simple input how it performs
 letter = full_dataset[0]
 letter_act: np.ndarray = auto_encoder.activation(letter)
-print(letter)
-print(letter_act)
-print(np.around(letter_act))
+print(letter[1:])
+print(letter_act[1:])
+print(np.around(letter_act[1:]))
 
 noisy_letter: np.ndarray = parser.add_noise(letter, pm)
 noisy_letter_act: np.ndarray = auto_encoder.activation(noisy_letter)
-print(noisy_letter)
-print(noisy_letter_act)
-print(np.around(noisy_letter_act))
+print(noisy_letter[1:])
+print(noisy_letter_act[1:])
+print(np.around(noisy_letter_act[1:]))
 
 # hold execution
 utils.hold_execution()
