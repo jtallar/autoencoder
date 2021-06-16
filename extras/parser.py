@@ -58,8 +58,9 @@ def extract_subset(data: np.ndarray, ratio: int) -> (np.ndarray, np.ndarray):
 
 def add_noise(data: np.ndarray, prob: float) -> np.ndarray:
     resp: np.ndarray = data
-    for i in range(len(data)):
-        if np.random.uniform() > prob:
+    # skip bias
+    for i in range(1, len(data)):
+        if np.random.uniform() < prob:
             resp[i] = 1 - data[i]
     return resp
 

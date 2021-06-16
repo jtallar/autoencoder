@@ -97,5 +97,9 @@ utils.plot_latent_space(latent_space, labels, -1, 1)
 new_latent_space: np.ndarray = np.sum([latent_space[0], latent_space[1]], axis=0)/2
 new_letter: np.ndarray = auto_encoder.activation_from_latent_space(new_latent_space)
 
+letter: np.ndarray = auto_encoder.activation(full_dataset[0])
+print(dataset[0])
+print(letter)
+
 # hold execution
 utils.hold_execution()

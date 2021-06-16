@@ -28,7 +28,7 @@
 	"use_trust": false,
 
 	"denoising": {
-		"pm": 0.5
+		"pm": 0.25
 	},
 
 	"plot": false
