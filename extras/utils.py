@@ -142,6 +142,16 @@ def plot_two_components(pca_1, pca_2, comp_1, comp_2, var_labels, val_labels, sc
     else:
         plt.show(block=False)
 
+def plot_latent_space(matrix, labels, vmin=None, vmax=None):
+    fig, ax = plt.subplots(figsize=(12, 10))  # Create a figure containing a single axes.
+    plt.scatter(matrix[:, 0], matrix[:, 1], vmin=vmin, vmax=vmax)
+
+    for i in range(len(labels)):
+        ax.annotate(labels[i], (matrix[i, 0], matrix[i, 1]), fontsize=10)
+
+    plt.tight_layout()
+    plt.show(block=False)
+
 def plot_matrix(matrix, cmap='inferno', not_exp=False, vmin=None, vmax=None):
     fig, ax = plt.subplots(figsize=(12, 10))  # Create a figure containing a single axes.
 

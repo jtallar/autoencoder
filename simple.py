@@ -80,6 +80,8 @@ else:
     utils.plot_values(ep_list, 'epoch', err_list, 'error', sci_y=False)
 
 # TODO: Algo de aca abajo me tira overflow si uso minimizer
+print(auto_encoder.flatten_weights())
+
 # labels for printing (use with full_dataset)
 labels: [] = ['@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\', ']', '^', '_']
 
@@ -88,6 +90,8 @@ aux: [] = []
 for data in full_dataset:
     aux.append(auto_encoder.activation_to_latent_space(data))
 latent_space: np.ndarray = np.array(aux)
+# plot latent space
+utils.plot_latent_space(latent_space, labels, -1, 1)
 
 # generate a new letter not from the dataset. Creates a new Z between the first two
 new_latent_space: np.ndarray = np.sum([latent_space[0], latent_space[1]], axis=0)/2

@@ -115,7 +115,7 @@ class AutoEncoder(object):
         flat_w = self.flatten_weights()
         # optimize error
         res = optimize.minimize(self.error_minimizer, flat_w, method=method, args=(data_in, data_out, trust, use_trust),
-                            options={'maxiter': max_iter, 'maxfun': max_fev, 'maxfev': max_fev, 'disp': True})
+                            options={'maxiter': max_iter, 'maxfev': max_fev, 'disp': True})
         # unflatten weights
         self.unflatten_weights(res.x)
         # Error of the cost function
