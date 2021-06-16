@@ -5,3 +5,5 @@
 `training_ratio` betweeen 0 and 1
 
 #!pip3 install tensorflow
+#!pip install tensorflow-datasets
+#!pip install tfds-nightly
