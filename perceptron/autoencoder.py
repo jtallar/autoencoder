@@ -2,6 +2,7 @@ import numpy as np
 import extras.functions as f
 import perceptron.complex as cp
 
+from scipy import optimize
 
 # uses 2 complex perceptron
 class AutoEncoder(object):
@@ -21,6 +22,9 @@ class AutoEncoder(object):
         decoder_layout.append(data_dim)
         self.decoder = cp.ComplexPerceptron(activation_function, activation_function_derived, decoder_layout,
                                             latent_dim, full_hidden=False, momentum=momentum, mom_alpha=mom_alpha)
+
+        # optimizer variables
+        self.opt_err = []
 
     # performs the training on the auto-encoder
     def train(self, data_in: np.ndarray, data_out: np.ndarray, eta: float) -> None:
@@ -64,3 +68,57 @@ class AutoEncoder(object):
         out: np.ndarray = data_out[:, 1:]
 
         return (np.linalg.norm(out - act) ** 2) / len(out)
+
+    ## OPTIMIZATION METHODS
+
+    # flatten weights to 1D
+    def flatten_weights(self):
+        w_matrix: [] = []
+        # append encoder weights
+        for layer in self.encoder.network:
+            for s_p in layer:
+                w_matrix.append(s_p.w)
+        # apend decoder weights
+        for layer in self.decoder.network:
+            for s_p in layer:
+                w_matrix.append(s_p.w)
+        # flatten weights to become array
+        return np.hstack(np.array(w_matrix, dtype=object))
+    
+    # unflatten weights to network
+    def unflatten_weights(self, flat_w: np.ndarray):
+        w_index: int = 0
+        # append encoder weights
+        for layer in self.encoder.network:
+            for s_p in layer:
+                s_p.set_w(flat_w[w_index:w_index+len(s_p.w)])
+                w_index += len(s_p.w)
+        # apend decoder weights
+        for layer in self.decoder.network:
+            for s_p in layer:
+                s_p.set_w(flat_w[w_index:w_index+len(s_p.w)])
+                w_index += len(s_p.w)
+    
+    # calculate error for minimizer
+    def error_minimizer(self, flat_w: np.ndarray, data_in: np.ndarray, data_out: np.ndarray, trust: float, use_trust: bool):
+        # unflatten weights
+        self.unflatten_weights(flat_w)
+        # calculate error
+        err = self.error(data_in, data_out, trust, use_trust)
+        self.opt_err.append(err)
+        print(f'Optimizer error: {err}')
+        return err
+
+    # train autoencoder with minimizer
+    def train_minimizer(self, data_in: np.ndarray, data_out: np.ndarray, trust: float, use_trust: bool, method: str, max_iter: int, max_fev: int):
+        # flatten weights
+        flat_w = self.flatten_weights()
+        # optimize error
+        res = optimize.minimize(self.error_minimizer, flat_w, method=method, args=(data_in, data_out, trust, use_trust),
+                            options={'maxiter': max_iter, 'maxfun': max_fev, 'maxfev': max_fev, 'disp': True})
+        # unflatten weights
+        self.unflatten_weights(res.x)
+        # Error of the cost function
+        final_err = res.fun
+        print(f'Final error is {final_err}')
+        return final_err

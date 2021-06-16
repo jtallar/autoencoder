@@ -34,33 +34,52 @@ auto_encoder = ae.AutoEncoder(*act_funcs, config["mid_layout"], len(dataset[0]),
 if bool(config["randomize_w"]):
     auto_encoder.randomize_w(config["randomize_w_ref"])
 
-# vars for plotting
-ep_list = []
-err_list = []
+# initialize plotter
+utils.init_plotter()
 
-# train auto-encoder
-for ep in range(config["epochs"]):
-
-    # randomize the dataset everytime
+# use minimizer if asked
+if config["optimizer"] != "None" and config["optimizer"] != "":
+    # randomize the dataset
     dataset = parser.randomize_data(dataset, config["data_random_seed"])
+    # train with minimize
+    auto_encoder.train_minimizer(dataset, dataset, config["trust"], config["use_trust"], config["optimizer"], config["optimizer_iter"], config["optimizer_fev"])
+    # plot error vs opt step
+    utils.plot_values(range(len(auto_encoder.opt_err)), 'opt step', auto_encoder.opt_err, 'error', sci_y=False)
+else:
+    # vars for plotting
+    ep_list = []
+    err_list = []
 
-    # train for this epoch
-    for data in dataset:
-        auto_encoder.train(data, data, config["eta"])
+    # train auto-encoder
+    for ep in range(config["epochs"]):
 
-    # apply the changes
-    auto_encoder.update_w()
+        # randomize the dataset everytime
+        dataset = parser.randomize_data(dataset, config["data_random_seed"])
 
-    # calculate error
-    err = auto_encoder.error(dataset, dataset, config["trust"], config["use_trust"])
+        # train for this epoch
+        for data in dataset:
+            auto_encoder.train(data, data, config["eta"])
 
-    if err < config["error_threshold"]:
-        break
+        # apply the changes
+        auto_encoder.update_w()
 
-    # add error to list
-    ep_list.append(ep)
-    err_list.append(err)
+        # calculate error
+        err = auto_encoder.error(dataset, dataset, config["trust"], config["use_trust"])
 
+        if err < config["error_threshold"]:
+            break
+
+        if ep % 50 == 0:
+            print(f'Iteration {ep}, error {err}')
+
+        # add error to list
+        ep_list.append(ep)
+        err_list.append(err)
+
+    # plot error vs epoch
+    utils.plot_values(ep_list, 'epoch', err_list, 'error', sci_y=False)
+
+# TODO: Algo de aca abajo me tira overflow si uso minimizer
 # labels for printing (use with full_dataset)
 labels: [] = ['@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\', ']', '^', '_']
 
@@ -74,7 +93,5 @@ latent_space: np.ndarray = np.array(aux)
 new_latent_space: np.ndarray = np.sum([latent_space[0], latent_space[1]], axis=0)/2
 new_letter: np.ndarray = auto_encoder.activation_from_latent_space(new_latent_space)
 
-# plot error vs epoch
-utils.init_plotter()
-utils.plot_values(ep_list, 'epoch', err_list, 'error', sci_y=False)
+# hold execution
 utils.hold_execution()

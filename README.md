@@ -7,3 +7,4 @@
 #!pip3 install tensorflow
 #!pip install tensorflow-datasets
 #!pip install tfds-nightly
+#!pip3 install scipy
