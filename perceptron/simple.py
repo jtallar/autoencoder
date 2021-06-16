@@ -54,9 +54,11 @@ class SimplePerceptron(object):
         return self.act_func(np.dot(input_arr, self.w))
 
     # resets the w to a randomize range
-    def randomize_w(self, ref: float) -> None:
-        self.w = np.random.uniform(-ref, ref, len(self.w))
-        # self.w = np.random.uniform(-np.sqrt(1 / len(self.w)), np.sqrt(1 / len(self.w)), len(self.w))
+    def randomize_w(self, ref: float, by_len: bool = False) -> None:
+        if by_len:
+            self.w = np.random.uniform(-np.sqrt(1 / len(self.w)), np.sqrt(1 / len(self.w)), len(self.w))
+        else:
+            self.w = np.random.uniform(-ref, ref, len(self.w))
 
     # for epoch training delta is the accum value
     def update_w(self):

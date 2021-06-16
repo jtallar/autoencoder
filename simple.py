@@ -32,7 +32,7 @@ auto_encoder = ae.AutoEncoder(*act_funcs, config["mid_layout"], len(dataset[0]),
 
 # randomize w if asked
 if bool(config["randomize_w"]):
-    auto_encoder.randomize_w(config["randomize_w_ref"])
+    auto_encoder.randomize_w(config["randomize_w_ref"], config["randomize_w_by_len"])
 
 # initialize plotter
 utils.init_plotter()

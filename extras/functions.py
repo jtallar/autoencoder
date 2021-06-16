@@ -12,7 +12,7 @@ def get_activation_functions(name: str, beta: float):
     # the derived activation func, if it cant be, then return always 1
     act_funcs_der_dict = {
         "linear": lambda x: 1,
-        "tanh": lambda x: beta * (1 - act_funcs_dict["tanh"](x) ** 2),
+        "tanh": lambda x: beta * (1 - (act_funcs_dict["tanh"](x) ** 2)),
         "exp": lambda x: 2 * beta * act_funcs_dict["exp"](x) * (1 - act_funcs_dict["exp"](x))
     }
 

@@ -142,12 +142,16 @@ def plot_two_components(pca_1, pca_2, comp_1, comp_2, var_labels, val_labels, sc
     else:
         plt.show(block=False)
 
-def plot_latent_space(matrix, labels, vmin=None, vmax=None):
+def plot_latent_space(matrix, labels, min_val=None, max_val=None):
     fig, ax = plt.subplots(figsize=(12, 10))  # Create a figure containing a single axes.
-    plt.scatter(matrix[:, 0], matrix[:, 1], vmin=vmin, vmax=vmax)
+    plt.scatter(matrix[:, 0], matrix[:, 1])
 
     for i in range(len(labels)):
         ax.annotate(labels[i], (matrix[i, 0], matrix[i, 1]), fontsize=10)
+
+    if min_val is not None and max_val is not None:
+        ax.set_xlim([min_val, max_val])
+        ax.set_ylim([min_val, max_val])
 
     plt.tight_layout()
     plt.show(block=False)

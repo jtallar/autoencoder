@@ -41,9 +41,9 @@ class ComplexPerceptron(object):
 
     # resets the w to a randomize range if desired for the entire network
     # if randomize is false, then does nothing
-    def randomize_w(self, ref: float) -> None:
+    def randomize_w(self, ref: float, by_len: bool = False) -> None:
         for layer in self.network:
-            list(map(lambda s_p: s_p.randomize_w(ref), layer))
+            list(map(lambda s_p: s_p.randomize_w(ref, by_len), layer))
 
     # for epoch training updates each w with its accum
     def update_w(self) -> None:

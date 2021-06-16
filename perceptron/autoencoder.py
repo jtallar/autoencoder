@@ -53,9 +53,9 @@ class AutoEncoder(object):
         return self.encoder.retro(expected_out, eta, sup_w, sup_delta)
 
     # initially the weights (w) start with 0, initialize/change them
-    def randomize_w(self, ref: float) -> None:
-        self.encoder.randomize_w(ref)
-        self.decoder.randomize_w(ref)
+    def randomize_w(self, ref: float, by_len: bool = False) -> None:
+        self.encoder.randomize_w(ref, by_len)
+        self.decoder.randomize_w(ref, by_len)
 
     # for epoch training updates each perceptron its weights
     def update_w(self) -> None:
