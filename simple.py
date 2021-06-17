@@ -7,6 +7,10 @@ import extras.functions as functions
 import extras.utils as utils
 import perceptron.autoencoder as ae
 
+import matplotlib.pyplot as plt
+
+LETTER_WIDTH = 5
+
 with open("config.json") as file:
     config = json.load(file)
 
@@ -34,8 +38,13 @@ auto_encoder = ae.AutoEncoder(*act_funcs, config["mid_layout"], len(dataset[0]),
 if bool(config["randomize_w"]):
     auto_encoder.randomize_w(config["randomize_w_ref"], config["randomize_w_by_len"])
 
+plot_bool = bool(config["plot"])
+
 # initialize plotter
-utils.init_plotter()
+if plot_bool:
+    utils.init_plotter()
+    plt.ion()
+    plt.show()
 
 # use minimizer if asked
 if config["optimizer"] != "None" and config["optimizer"] != "":
@@ -77,10 +86,8 @@ else:
         err_list.append(err)
 
     # plot error vs epoch
-    utils.plot_values(ep_list, 'epoch', err_list, 'error', sci_y=False)
-
-# TODO: Algo de aca abajo me tira overflow si uso minimizer
-print(auto_encoder.flatten_weights())
+    if plot_bool:
+        utils.plot_values(ep_list, 'epoch', err_list, 'error', sci_y=False)
 
 # labels for printing (use with full_dataset)
 labels: [] = ['@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\', ']', '^', '_']
@@ -93,13 +100,28 @@ latent_space: np.ndarray = np.array(aux)
 # plot latent space
 utils.plot_latent_space(latent_space, labels, -1, 1)
 
-# generate a new letter not from the dataset. Creates a new Z between the first two
-new_latent_space: np.ndarray = np.sum([latent_space[0], latent_space[1]], axis=0)/2
-new_letter: np.ndarray = auto_encoder.activation_from_latent_space(new_latent_space)
-
-letter: np.ndarray = auto_encoder.activation(full_dataset[0])
-print(dataset[0])
-print(letter)
-
 # hold execution
-utils.hold_execution()
+if plot_bool:
+    # utils.hold_execution()
+    plt.pause(0.001)
+
+while True:
+    print('--------------------------------------------')
+    for i, l in enumerate(labels):
+        print(f'{i}: {l}', end='\t')
+        if i % 10 == 9: print('')
+
+    index_1 = int(input("\nIngrese un indice de letra: "))
+    index_2 = int(input("\nIngrese otro indice de letra: "))
+
+    # generate a new letter not from the dataset. Creates a new Z between the first two
+    new_latent_space: np.ndarray = np.sum([latent_space[index_1], latent_space[index_2]], axis=0)/2
+    new_letter: np.ndarray = auto_encoder.activation_from_latent_space(new_latent_space)
+
+    utils.print_pattern(full_dataset[index_1, 1:], LETTER_WIDTH)
+    print('\n--------------------------------------------')
+    utils.print_pattern(full_dataset[index_2, 1:], LETTER_WIDTH)
+    print('\n--------------------------------------------')
+    print(new_letter)
+    print('\n--------------------------------------------')
+    utils.print_pattern(np.around(new_letter[1:]), LETTER_WIDTH)

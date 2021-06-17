@@ -19,7 +19,7 @@
 	"latent_dim": 2,
 	"randomize_w": true,
 	"randomize_w_ref": 0.5,
-	"randomize_w_by_len": true,
+	"randomize_w_by_len": false,
 
 	"eta": 1e-3,
 	"error_threshold": 1,
@@ -31,5 +31,5 @@
 		"pm": 0.25
 	},
 
-	"plot": false
+	"plot": true
 }

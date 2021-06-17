@@ -144,10 +144,10 @@ def plot_two_components(pca_1, pca_2, comp_1, comp_2, var_labels, val_labels, sc
 
 def plot_latent_space(matrix, labels, min_val=None, max_val=None):
     fig, ax = plt.subplots(figsize=(12, 10))  # Create a figure containing a single axes.
-    plt.scatter(matrix[:, 0], matrix[:, 1])
+    plt.scatter(matrix[:, 0], matrix[:, 1], s=[60 for n in range(len(matrix[:, 0]))])
 
     for i in range(len(labels)):
-        ax.annotate(labels[i], (matrix[i, 0], matrix[i, 1]), fontsize=10)
+        ax.annotate(labels[i], (matrix[i, 0], matrix[i, 1]), fontsize=20)
 
     if min_val is not None and max_val is not None:
         ax.set_xlim([min_val, max_val])
@@ -155,6 +155,14 @@ def plot_latent_space(matrix, labels, min_val=None, max_val=None):
 
     plt.tight_layout()
     plt.show(block=False)
+
+# Print side x side pattern from side x side lengthed array
+def print_pattern(pattern: np.ndarray, side: int):
+    for i in range(len(pattern)):
+        car = '*' if pattern[i] > 0 else ' '
+        print(car, end='')
+        if i != 0 and (i + 1) % side == 0:
+            print('\n', end='')
 
 def plot_matrix(matrix, cmap='inferno', not_exp=False, vmin=None, vmax=None):
     fig, ax = plt.subplots(figsize=(12, 10))  # Create a figure containing a single axes.
