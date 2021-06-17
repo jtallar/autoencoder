@@ -36,23 +36,23 @@ python3 vae.py
 Todas las configuraciones de ejecución se establecen en el archivo `config.json`. A continuación, se explica a qué hace referencia cada configuración:
 - **file** indica de donde se toma el conjunto de datos
 - **system_threshold** indica el valor constante asignado al primer elemento de los conjuntos que se multiplicarán con w, cuyo primer elemento es w0
-- **training_ratio** indica que porcentaje del training_file se usa para entrenar, quedando el restante para probar
+- **training_ratio** indica que porcentaje del training_file se usa para entrenar, quedando el restante para probar (entre 0 y 1)
 - **normalize** indica el boolean de si se desea normalizar la entrada del perceptrón
 
 - **system** indica la función de activación, cuyos valores posibles son:
-    - `sign`        --> función signo
     - `linear`      --> función identidad (lineal)
     - `tanh`        --> función tangente hiperbólica (no lineal)
-- **beta** indica ael multiplicador de x al utilizar una función no lineal
+    - `exp`         --> función sigmoide (no lineal)
+- **beta** indica el multiplicador de x al utilizar una función no lineal
 
 - **momentum** indica el boolean de si se desea aplicar la técnica de momentum o no
 - **alpha** indica el valor del coeficiente alfa que se usa para momentum
 
-- **optimizer** ??.
+- **optimizer** indica el nombre del método de optimización a utilizar para minimizar el error.
     - `None`        --> sin función de minimización
-    - `Powwel`      --> sin función de minimización
-- **opmizer_iter** ???
-- **optimizer_fev** ???
+    - `Powell`      --> utilizando el método de Powell
+- **opmizer_iter** cantidad de iteraciones que realiza el optimizador
+- **optimizer_fev** cantidad de evaluaciones de la función de error que realiza el optimizador
 
 
 - **mid_layout** es un array que indica las capas ocultas y sus dimensiones respectivas (solo para el encoder, el decoder las toma invertidas solo)
@@ -72,3 +72,87 @@ Todas las configuraciones de ejecución se establecen en el archivo `config.json
 
 - **plot** indica el boolean de si se desea graficar
 
+### Ejemplo 1
+```json
+{
+	"file": "inputs/font002.txt",
+	"system_threshold": 1,
+	"training_ratio": 1,
+	"data_random_seed": 0,
+	"normalize": false,
+
+	"system": "tanh",
+	"beta": 0.9,
+
+	"momentum": true,
+	"alpha": 0.9,
+
+	"optimizer": "Powell",
+	"optimizer_iter": 10,
+	"optimizer_fev": 150000,
+
+	"mid_layout": [25],
+	"latent_dim": 2,
+	"randomize_w": true,
+	"randomize_w_ref": 0.5,
+	"randomize_w_by_len": false,
+
+	"eta": 1e-3,
+	"error_threshold": 1,
+	"epochs": 1000,
+	"trust": 0.5,
+	"use_trust": false,
+
+	"denoising": {
+		"pm": 0.25
+	},
+
+	"plot": true
+}
+
+
+```
+
+### Ejemplo 2
+```json
+{
+	"file": "inputs/font002.txt",
+	"system_threshold": 1,
+	"training_ratio": 1,
+	"data_random_seed": 0,
+	"normalize": false,
+
+	"system": "exp",
+	"beta": 0.5,
+
+	"momentum": true,
+	"alpha": 0.9,
+
+	"optimizer": "None",
+	"optimizer_iter": 10,
+	"optimizer_fev": 150000,
+
+	"mid_layout": [25],
+	"latent_dim": 2,
+	"randomize_w": true,
+	"randomize_w_ref": 0.5,
+	"randomize_w_by_len": false,
+
+	"eta": 1e-3,
+	"error_threshold": 1,
+	"epochs": 1000,
+	"trust": 0.5,
+	"use_trust": false,
+
+	"denoising": {
+		"pm": 0.25
+	},
+
+	"plot": false
+}
+
+```
+
+## Presentación
+Link a la presentación completa: 
+https://docs.google.com/presentation/d/1qDp6P7GOqE7LNMg-ZNcKZ2pfwXffxnDBg8etEl1qv_I/edit#slide=id.p1
