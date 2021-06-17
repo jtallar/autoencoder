@@ -1,6 +1,7 @@
 import json
 
 import numpy as np
+import statistics as sts
 
 import extras.parser as parser
 import extras.functions as functions
@@ -34,8 +35,11 @@ auto_encoder = ae.AutoEncoder(*act_funcs, config["mid_layout"], len(dataset[0]),
 if bool(config["randomize_w"]):
     auto_encoder.randomize_w(config["randomize_w_ref"], config["randomize_w_by_len"])
 
+plot_bool = bool(config["plot"])
+
 # initialize plotter
-utils.init_plotter()
+if plot_bool:
+    utils.init_plotter()
 
 # get pm from config
 pm: float = config["denoising"]["pm"]
@@ -72,30 +76,41 @@ else:
             break
 
         if ep % 50 == 0:
-            print(f'Iteration {ep}, error {err}')
+            print(f'Iteration {ep}, error {error}')
 
         # add error to list
         ep_list.append(ep)
-        err_list.append(err)
+        err_list.append(error)
     
     # plot error vs epoch
-    utils.plot_values(ep_list, 'epoch', err_list, 'error', sci_y=False)
+    if plot_bool:
+        utils.plot_values(ep_list, 'epoch', err_list, 'error', sci_y=False)
 
 # labels for printing (use with full_dataset)
 labels: [] = ['@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\', ']', '^', '_']
 
-# check simple input how it performs
-letter = full_dataset[0]
-letter_act: np.ndarray = auto_encoder.activation(letter)
-print(letter[1:])
-print(letter_act[1:])
-print(np.around(letter_act[1:]))
+PM_ITER = 50
 
-noisy_letter: np.ndarray = parser.add_noise(letter, pm)
-noisy_letter_act: np.ndarray = auto_encoder.activation(noisy_letter)
-print(noisy_letter[1:])
-print(noisy_letter_act[1:])
-print(np.around(noisy_letter_act[1:]))
+pm_values = [pm / 4, pm, pm * 2.5]
+x_superlist = []
+err_superlist = []
+leg_list = ['pm=0,0625', 'pm=0,25', 'pm=0,625']
+for pm_it in pm_values:
+    err_mean: [] = []
+    for data in full_dataset:
+        aux: [] = []
+        for i in range(PM_ITER):
+            noisy_res = auto_encoder.activation(parser.add_noise(data, pm_it))
+            aux.append(np.sum(abs(np.around(noisy_res[1:]) - data[1:])) / len(data[1:]))
+        letter_err_mean = sts.mean(aux)
+        err_mean.append(letter_err_mean)
+    x_superlist.append(range(len(full_dataset)))
+    err_superlist.append(err_mean)
+    print(f'Using pm={pm_it}, error mean is {sts.mean(err_mean)}')
 
-# hold execution
-utils.hold_execution()
+if plot_bool:
+    utils.plot_multiple_values(x_superlist, 'Letter', err_superlist, 'Invalid bits', leg_list, sci_y=False, xticks=labels, min_val_y=0, max_val_y=1)
+    utils.plot_stackbars(x_superlist, 'Letter', err_superlist, 'Invalid bits', leg_list, sci_y=False, xticks=labels, min_val_y=0, max_val_y=1)
+
+    # hold execution
+    utils.hold_execution()
